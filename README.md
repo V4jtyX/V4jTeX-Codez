@@ -1,2 +1,1 @@
-# V4jTeX-Codez
-My Codes for Everyone!
+I am actively building open-source automation scripts for developers to streamline their local environments and compilation times. While I don't have 5k stars yet, my tools are designed to solve critical resource-drain issues on Windows dev machines, which many beginners and students depend on. Access to Claude Max would greatly help me expand this project further.
