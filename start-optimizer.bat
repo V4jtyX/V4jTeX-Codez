@@ -1,73 +1,67 @@
 @echo off
-title DevEnv-Optimizer v1.0.0
+color 0A
+title DevEnv-Optimizer v2.0.1
 echo =======================================================
-echo   DevEnv-Optimizer - Developer System Setup & Tweak
+echo         DevEnv-Optimizer - Pro Environment Setup
 echo =======================================================
 echo.
 
-:: Kontrola správcovských oprávnění
+:: Admin privileges check
 net session >nul 2>&1
 if %errorLevel% == 0 (
-    echo [SUCCESS] Spusteno s pravy administratora.
+    echo [OK] Running with Administrator privileges.
 ) else (
-    echo [ERROR] Tento skript musi byt spusten jako Administrator!
-    echo Klikni na soubor pravym tlacitkem a zvol "Spustit jako administrator".
+    echo [ERROR] This script requires Administrator privileges!
+    echo Please right-click the file and select "Run as administrator".
     pause
     exit /b
 )
 
 echo.
-echo [1/4] Pročišťování DNS mezipaměti pro rychlejší síťovou odezvu...
-ipconfig /flushdns
-
-echo.
-echo [2/4] Mazání dočasných systémových souborů (uvolnění disku a RAM)...
-del /s /f /q %temp%\*.* >nul 2>&1
-del /s /f /q C:\Windows\Temp\*.* >nul 2>&1
-echo [SUCCESS] Docasne soubory byly uspesne vymazany.
-
-echo.
-echo [3/4] Kontrola nainstalovaných vývojářských nástrojů v PATH...
+echo [1/5] Gathering System Hardware Information...
+echo -------------------------------------------------------
+wmic cpu get name | findstr /v "Name"
+wmic path Win32_VideoController get name | findstr /v "Name"
 echo -------------------------------------------------------
 
+echo.
+echo [2/5] Flushing DNS Resolver Cache for network stability...
+ipconfig /flushdns >nul
+echo [OK] DNS Cache flushed successfully.
+
+echo.
+echo [3/5] Cleaning Temporary System and Application Files...
+del /s /f /q "%temp%\*.*" >nul 2>&1
+del /s /f /q "C:\Windows\Temp\*.*" >nul 2>&1
+echo [OK] Temporary files removed. Free space recovered.
+
+echo.
+echo [4/5] Verifying Environment Variables (Dev Stack)...
+echo -------------------------------------------------------
 where git >nul 2>&1
-if %errorlevel%==0 (
-    echo  [-] Git je nainstalován. Verze:
-    git --version
-) else (
-    echo  [-] Git NEBYL v systému nalezen.
-)
+if %errorlevel%==0 ( echo  [OK] Git is configured. ) else ( echo  [--] Git NOT found in PATH. )
 
 where java >nul 2>&1
-if %errorlevel%==0 (
-    echo  [-] Java je nainstalována. Verze:
-    java -version 2>&1 | findstr "version"
-) else (
-    echo  [-] Java NEBYLA v systému nalezena.
-)
+if %errorlevel%==0 ( echo  [OK] Java SDK is configured. ) else ( echo  [--] Java NOT found in PATH. )
 
 where python >nul 2>&1
-if %errorlevel%==0 (
-    echo  [-] Python je nainstalován. Verze:
-    python --version
-) else (
-    echo  [-] Python NEBYL v systému nalezen.
-)
+if %errorlevel%==0 ( echo  [OK] Python is configured. ) else ( echo  [--] Python NOT found in PATH. )
 
+where node >nul 2>&1
+if %errorlevel%==0 ( echo  [OK] Node.js is configured. ) else ( echo  [--] Node.js NOT found in PATH. )
 echo -------------------------------------------------------
 
 echo.
-echo [4/4] Optimalizace schématu napájení pro náročné kompilace...
-:: Aktivace schématu "Vysoký výkon" pomocí jeho výchozího GUIDu
+echo [5/5] Optimizing Power Plan for Maximum Compilation Speed...
 powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c >nul 2>&1
 if %errorlevel%==0 (
-    echo [SUCCESS] Rezim napajeni byl prepnut na Vysoky vykoN.
+    echo [OK] Power plan enforced to High Performance.
 ) else (
-    echo [INFO] Nepodarilo se vynutit rezim Vysokeho vykonu.
+    echo [INFO] Could not enforce High Performance power plan.
 )
 
 echo.
 echo =======================================================
-echo   Optimalizace vývojářského prostředí dokončena!
+echo   Optimization Complete! Your environment is ready.
 echo =======================================================
 pause
